@@ -69,6 +69,7 @@ class Note:
 
     def shift(self, semitones):
         self.value += semitones    
+        return self.value
 
     @staticmethod
     def standard_name(name):
@@ -83,7 +84,7 @@ class Note:
 
     @staticmethod
     def note2int(name, octave, cents):
-        ''' Converts a note name to an integer, where A0 is 0 '''
+        ''' Converts a note name to an integer, where A0 is 0, Bb0 is 1, ... '''
 
         name = Note.standard_name(name)
 
@@ -91,7 +92,6 @@ class Note:
         octave_val = octave * len(NOTE_NAMES)
 
         return name_val + octave_val + cents
-
 
 
 def note_range(tuning=440, start=Note('C',0), end=Note('C',8)):
