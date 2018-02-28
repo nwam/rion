@@ -1,4 +1,6 @@
+import math
 
+# TODO: note names should start at C
 NOTE_NAMES = ('A', 'Bb', 'B', 'C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#')
 ALTERNATE_NOTE_NAMES = {'A#':'Bb', 'Db':'C#', 'D#':'Eb', 'Gb':'F#', 'Ab':'G#'}
 
@@ -37,7 +39,7 @@ class Note:
             value = self.note2int(name, octave, cents)
 
         if frequency is not None:
-            value = self.freq2int(frequency)
+            value = self.freq2int(frequency, tuning)
 
         self.value = value
         self.tuning = tuning
@@ -103,9 +105,9 @@ class Note:
         return name_val + octave_val + cents
 
     @staticmethod
-    def freq2int(freq):
+    def freq2int(freq, tuning):
         ref = Note('A', 4).as_int()
-        return round(np.log(freq/self.tuning) / np.log(SEMITONE) + ref, 2)
+        return round(math.log(freq/tuning) / math.log(SEMITONE) + ref, 2)
 
 
 def note_range(tuning=440, start=Note('C',0), end=Note('C',8)):
