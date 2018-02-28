@@ -8,11 +8,15 @@ FLAT  = 'b'
 SEMITONE = 2**(1/12)
 
 class Note:
-    def __init__(self, name='A', octave=4, cents=0, value=None, tuning=440):
-        '''
-        Create a note by supplying name, octave, and cents, or value
+    def __init__(self, name='A', octave=4, cents=0, value=None, frequency=None, tuning=440):
+        '''Charles Stepney, Maurice White
+        Create a note by supplying:
+            1. name, octave, and cents,
+            2. value, or
+            3. frequency
         note = Note('A', 4, 0.5, tuning=440)
         note = Note(value=35, tuning=440)
+        note = Note(frequency=1000, tuning=440)
 
         Inputs
             name: name of the note
@@ -20,6 +24,8 @@ class Note:
             cents: semitone offset
 
             value: note as an integer, where 0 is A0
+
+            frequency: note as a frequency
 
             tuning: the frequency of A4
         '''
@@ -29,6 +35,9 @@ class Note:
 
         if value is None:
             value = self.note2int(name, octave, cents)
+
+        if frequency is not None:
+            value = self.freq2int(frequency)
 
         self.value = value
         self.tuning = tuning
@@ -92,6 +101,11 @@ class Note:
         octave_val = octave * len(NOTE_NAMES)
 
         return name_val + octave_val + cents
+
+    @staticmethod
+    def freq2int(freq):
+        ref = Note('A', 4).as_int()
+        return round(np.log(freq/self.tuning) / np.log(SEMITONE) + ref, 2)
 
 
 def note_range(tuning=440, start=Note('C',0), end=Note('C',8)):
