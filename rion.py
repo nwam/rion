@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import peakutils
+import sys
 
 import pdb
 
@@ -65,11 +66,16 @@ def note_filter(x):
     return X_notes, notes
 
 if __name__ == '__main__':
+    sample_file = TRUMPET_SAMPLE
+    
+    if len(sys.argv) > 1:
+        sample_file = sys.argv[1]
+
     # Load trumpet sample
-    rate, x = scipy.io.wavfile.read(TRUMPET_SAMPLE)
+    rate, x = scipy.io.wavfile.read(sample_file)
     X = np.fft.fft(x)
-#    plt.plot(X)
-#    plt.show()
+    plt.plot(X)
+    plt.show()
 
     X_notes, notes = note_filter(x)
     X_notes = X_notes / max(X_notes)
@@ -88,7 +94,6 @@ if __name__ == '__main__':
     modal_tone = max(set(peak_tones), key=peak_tones.count)
 
     print('f_0 is {} and modal tone is {}'.format(f_0, modal_tone))
-
 
     # Save result
     #scipy.io.wavfile.write('TrumpetOut.wav', fs, x)
