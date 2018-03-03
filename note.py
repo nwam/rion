@@ -1,7 +1,6 @@
 import math
 
-# TODO: note names should start at C
-NOTE_NAMES = ('A', 'Bb', 'B', 'C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#')
+NOTE_NAMES = ('C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B')
 ALTERNATE_NOTE_NAMES = {'A#':'Bb', 'Db':'C#', 'D#':'Eb', 'Gb':'F#', 'Ab':'G#'}
 
 SHARP = '#'
@@ -110,7 +109,7 @@ class Note:
         return round(math.log(freq/tuning) / math.log(SEMITONE) + ref, 2)
 
 
-def note_range(tuning=440, start=Note('C',0), end=Note('C',8)):
+def note_range(tuning=440, start=Note('C',0), end=Note('C',9)):
     '''
     Creates a range of notes from start to end
 
