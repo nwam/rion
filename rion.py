@@ -26,10 +26,10 @@ def note_filter(x, fs=44100):
     '''
 
     # Get the list of notes that we will bucket to
-    notes = notepy.note_range(start=notepy.Note('A', 0), end=notepy.Note('F', 9))
+    notes = notepy.note_range(start=notepy.Note('C', 0), end=notepy.Note('C', 10))
 
     # Get the edge frequencies of each note
-    note_edges = notepy.note_range(start=notepy.Note('A', 0), end=notepy.Note('F#', 9))
+    note_edges = notepy.note_range(start=notepy.Note('C', 0), end=notepy.Note('C#', 10))
     for note_edge in note_edges:
         note_edge.shift(-0.5)
     note_edges = list(map(lambda n: n.frequency, note_edges))
@@ -50,9 +50,44 @@ def note_filter(x, fs=44100):
         # Iterate through frequencies near the current note
         for freq in range(math.floor(edge_low), math.ceil(edge_high)+1):
             similarity = 1/(abs(note.frequency - freq)+1)**(1/12)
-            X_notes[i] += (abs(X[freq]))**2 * similarity
+            X_notes[i] += (abs(X[freq])) * similarity
 
         # Normalize to the size (width) of the bucket
         X_notes[i] /= (edge_high - edge_low)
 
     return X_notes, notes
+
+def get_notes(x, fs=44100):
+    '''
+    Gets the peaks in the fft and 
+    returns a list of the corresponding note and magnitude of each peak
+
+    notes = get_notes(x, fs=44100)
+
+    inputs
+        x: signal in time domain
+        fs: sampling rate
+
+    output
+        notes: a list of Note objects of the detected note
+        magnitudes: a list of len(notes) with the magnitudes of notes
+    '''
+
+    notes = []
+    magnitudes = []
+    
+    X = np.fft.fft(x)
+    X = X[ : math.ceil(len(X)/2) ]
+    X = X/np.max(X)
+
+    peaks = peakutils.indexes(X, thres=0.55/max(X), min_dist=5)
+
+    for peak in peaks:
+        freq = peak * len(x)/fs
+        note = notepy.Note(frequency=freq)
+        magnitude = X[peak]
+
+        notes.append(note)
+        magnitudes.append(np.real(magnitude))
+
+    return magnitudes, notes
