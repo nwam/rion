@@ -26,7 +26,7 @@ def note_filter(x, fs=44100):
     '''
 
     # Get the list of notes that we will bucket to
-    notes = notepy.note_range(start=notepy.Note('C', 0), end=notepy.Note('C', 10))
+    notes = notepy.note_range(start=notepy.Note('A', 0), end=notepy.Note('C', 10))
 
     # Get the edge frequencies of each note
     note_edges = notepy.note_range(start=notepy.Note('C', 0), end=notepy.Note('C#', 10))
@@ -44,16 +44,28 @@ def note_filter(x, fs=44100):
     # Fill note buckets
     for i in range(len(notes)):
         note = notes[i]
-        edge_low = note_edges[i] * len(x)/fs
-        edge_high = note_edges[i+1] * len(x)/fs
 
-        # Iterate through frequencies near the current note
-        for freq in range(math.floor(edge_low), math.ceil(edge_high)+1):
-            similarity = 1/(abs(note.frequency - freq)+1)**(1/12)
-            X_notes[i] += (abs(X[freq])) * similarity
+        freq_bucket = note.frequency / (len(x)/fs)
+        freq_bucket_low = math.floor(freq_bucket)
+        freq_bucket_high = math.ceil(freq_bucket)
 
-        # Normalize to the size (width) of the bucket
-        X_notes[i] /= (edge_high - edge_low)
+        if freq_bucket_high >= len(X):
+            break
+
+        X_notes[i] += abs(X[freq_bucket_low]) * (1-abs(freq_bucket - freq_bucket_low))
+        X_notes[i] += abs(X[freq_bucket_high]) * (1-abs(freq_bucket - freq_bucket_high)) 
+#        edge_low = note_edges[i] * len(x)/fs
+#        edge_high = note_edges[i+1] * len(x)/fs
+#
+#        # Iterate through frequencies near the current note
+#        for freq in range(math.floor(edge_low), math.ceil(edge_high)+1):
+#            #similarity = 1/(abs(note.frequency - freq)+1)**(1/12)
+#            difference = abs(note.as_int() - notepy.Note(frequency=freq/ (len(x)/fs)).as_int())
+#            similarity = 1 if difference < 0.05 else 0
+#            X_notes[i] += (abs(X[freq])) * similarity
+#
+#        # Normalize to the size (width) of the bucket
+#        X_notes[i] /= (edge_high - edge_low)
 
     return X_notes, notes
 
