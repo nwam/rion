@@ -67,7 +67,7 @@ def note_filter(x, fs=44100):
 #        # Normalize to the size (width) of the bucket
 #        X_notes[i] /= (edge_high - edge_low)
 
-    return X_notes, notes
+    return np.array(X_notes), notes
 
 def get_notes(x, fs=44100):
     '''
@@ -104,22 +104,20 @@ def get_notes(x, fs=44100):
 
     return magnitudes, notes
 
-def octave_normalize(note_vols):
+def octave_normalize(note_volumes):
     '''
     Given the volumes of each note, this returns the volumes, normalized to the total volume of the surrounding octave
 
-    normed_vols, octave_vols = octave_normalize(note_volumes)
+    normed_volumes, octave_volumes = octave_normalize(note_volumes)
 
     Input
-        note_vols: 1-D array of volumes of each note
+        note_volumes: 1-D array of volumes of each note
 
     Output
-        normed_vols: Volume of each note as a ratio of its surrounding octave
-        octave_vols: Total volume of each surrounding octave
+        normed_volumes: Volume of each note as a ratio of its surrounding octave
+        octave_volumes: Total volume of each surrounding octave
         
     '''
-
-    note_volumes = np.array(note_volumes)
 
     # Full octave kernel
     kernel = np.ones(notepy.OCTAVE + 1)
@@ -133,6 +131,6 @@ def octave_normalize(note_vols):
     # Get the normalized total of the surrounding octave
     oct_totals = oct_sums * len(kernel)/conv_counts
 
-    normed_vols = np.divide(note_volumes, oct_totals, out=np.zeros_like(note_volumes), where= oct_totals!=0)
+    normed_volumes = np.divide(note_volumes, oct_totals, out=np.zeros_like(note_volumes), where= oct_totals!=0)
 
-    return normed_vols, oct_totals
+    return normed_volumes, oct_totals
