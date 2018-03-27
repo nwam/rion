@@ -103,3 +103,36 @@ def get_notes(x, fs=44100):
         magnitudes.append(np.real(magnitude))
 
     return magnitudes, notes
+
+def octave_normalize(note_vols):
+    '''
+    Given the volumes of each note, this returns the volumes, normalized to the total volume of the surrounding octave
+
+    normed_vols, octave_vols = octave_normalize(note_volumes)
+
+    Input
+        note_vols: 1-D array of volumes of each note
+
+    Output
+        normed_vols: Volume of each note as a ratio of its surrounding octave
+        octave_vols: Total volume of each surrounding octave
+        
+    '''
+
+    note_volumes = np.array(note_volumes)
+
+    # Full octave kernel
+    kernel = np.ones(notepy.OCTAVE + 1)
+
+    # Sum the volumes of the surrounding octave
+    oct_sums = np.convolve(note_volumes, kernel, 'same')
+
+    # Count the notes involved in the convolution
+    conv_counts = [min(i, len(note_volumes)-i-1, len(kernel)//2) + len(kernel)//2+1 for i in range(len(note_volumes))]
+
+    # Get the normalized total of the surrounding octave
+    oct_totals = oct_sums * len(kernel)/conv_counts
+
+    normed_vols = np.divide(note_volumes, oct_totals, out=np.zeros_like(note_volumes), where= oct_totals!=0)
+
+    return normed_vols, oct_totals

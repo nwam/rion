@@ -6,7 +6,8 @@ ALTERNATE_NOTE_NAMES = {'A#':'Bb', 'Db':'C#', 'D#':'Eb', 'Gb':'F#', 'Ab':'G#'}
 SHARP = '#'
 FLAT  = 'b'
 
-SEMITONE = 2**(1/12)
+OCTAVE = 12
+SEMITONE = 2**(1/OCTAVE)
 
 class Note:
     def __init__(self, name='A', octave=4, cents=0, value=None, frequency=None, tuning=440):
