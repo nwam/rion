@@ -45,7 +45,7 @@ def note_filter(x, fs=44100):
     for i in range(len(notes)):
         note = notes[i]
 
-        freq_bucket = note.frequency / (len(x)/fs)
+        freq_bucket = note.frequency * len(x)/fs
         freq_bucket_low = math.floor(freq_bucket)
         freq_bucket_high = math.ceil(freq_bucket)
 
@@ -95,7 +95,7 @@ def get_notes(x, fs=44100):
     peaks = peakutils.indexes(X, thres=0.55/max(X), min_dist=5)
 
     for peak in peaks:
-        freq = peak * len(x)/fs
+        freq = peak / (len(x)/fs)
         note = notepy.Note(frequency=freq)
         magnitude = X[peak]
 
