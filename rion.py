@@ -8,6 +8,7 @@ import ltfatpy
 
 import pdb
 
+from note import Note
 import note as notepy
 
 def note_filter(x, fs=44100):
@@ -26,10 +27,10 @@ def note_filter(x, fs=44100):
     '''
 
     # Get the list of notes that we will bucket to
-    notes = notepy.note_range(start=notepy.Note('A', 0), end=notepy.Note('C', 10))
+    notes = notepy.note_range(start=Note('A', 0), end=Note('C', 10))
 
     # Get the edge frequencies of each note
-    note_edges = notepy.note_range(start=notepy.Note('C', 0), end=notepy.Note('C#', 10))
+    note_edges = notepy.note_range(start=Note('C', 0), end=Note('C#', 10))
     for note_edge in note_edges:
         note_edge.shift(-0.5)
     note_edges = list(map(lambda n: n.frequency, note_edges))
@@ -60,7 +61,7 @@ def note_filter(x, fs=44100):
 #        # Iterate through frequencies near the current note
 #        for freq in range(math.floor(edge_low), math.ceil(edge_high)+1):
 #            #similarity = 1/(abs(note.frequency - freq)+1)**(1/12)
-#            difference = abs(note.as_int() - notepy.Note(frequency=freq/ (len(x)/fs)).as_int())
+#            difference = abs(note.as_int() - Note(frequency=freq/ (len(x)/fs)).as_int())
 #            similarity = 1 if difference < 0.05 else 0
 #            X_notes[i] += (abs(X[freq])) * similarity
 #
@@ -96,7 +97,7 @@ def get_notes(x, fs=44100):
 
     for peak in peaks:
         freq = peak / (len(x)/fs)
-        note = notepy.Note(frequency=freq)
+        note = Note(frequency=freq)
         magnitude = X[peak]
 
         notes.append(note)

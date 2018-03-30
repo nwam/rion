@@ -121,7 +121,7 @@ class Note:
         return round(math.log(freq/tuning) / math.log(SEMITONE) + ref, 2)
 
 
-def note_range(tuning=440, start=Note('C',0), end=Note('C',9)):
+def note_range(start=Note('C',0), end=Note('C',9), tuning=440):
     '''
     Creates a range of notes from start to end
 
